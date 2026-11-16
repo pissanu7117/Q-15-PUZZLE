@@ -7,7 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="15 PUZZLE">
-  <title>15 PUZZLE • Classic Blue</title>
+  <link rel="apple-touch-icon" href="15-puzzle-icon.png">
+  <link rel="icon" type="image/png" href="15-puzzle-icon.png">
+  <title>15 PUZZLE • 3D Themes</title>
   <style>
     :root {color-scheme:dark; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:#071226;}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -41,11 +43,40 @@
     .overlay{position:absolute;pointer-events:none;border-radius:14px;z-index:4;opacity:0;transition:transform .135s ease,opacity .135s ease;will-change:transform}
     @media(max-width:370px){.app{padding-left:10px;padding-right:10px}.board{gap:5px;padding:6px;border-radius:15px}.tile{font-size:clamp(37px,13.5vw,55px)}.action{font-size:14px}}
     @media(prefers-reduced-motion:reduce){.tile,.overlay{transition:none!important}}
+
+    /* 5 selectable glossy 3D themes. The core puzzle mechanics are unchanged. */
+    body{--page1:#102855;--page2:#08162e;--page3:#050d1d;--panel1:#1b355d;--panel2:#0a1a34;--edge:#5fa9ed;--board-bg:#071a39;--board-edge:#64bcff;--board-outer:#173c68;--tile-top:#15adff;--tile-mid:#0865df;--tile-bottom:#0638a6;--tile-edge:#70d8ff;--tile-text:#fff;--tile-stroke:#0a1637;--highlight1:#ffda22;--highlight2:#ffa519;--highlight3:#fa6b00;--accent:#ffeb21;--sub:#b9d8fc;--hint:#a6c3e8}
+    body[data-theme="purple"]{--page1:#60239a;--page2:#220a58;--page3:#10072c;--panel1:#602b9b;--panel2:#321361;--edge:#e888ff;--board-bg:#260947;--board-edge:#e787ff;--board-outer:#7e28bd;--tile-top:#ff5af1;--tile-mid:#c029ed;--tile-bottom:#6514bd;--tile-edge:#ffa0fc;--tile-stroke:#3d0d70;--highlight1:#ffe15e;--highlight2:#ffa017;--highlight3:#ff6b24;--accent:#ffe848;--sub:#f3b8ff;--hint:#e1b9f5}
+    body[data-theme="gold"]{--page1:#38332c;--page2:#181719;--page3:#080a10;--panel1:#3a3530;--panel2:#111317;--edge:#cda44d;--board-bg:#0e1117;--board-edge:#ffd06b;--board-outer:#725324;--tile-top:#686d74;--tile-mid:#363c45;--tile-bottom:#15191f;--tile-edge:#e9c373;--tile-stroke:#080b10;--highlight1:#ffe988;--highlight2:#ffc134;--highlight3:#a65d00;--accent:#ffd95e;--sub:#e3c58f;--hint:#c4b598}
+    body[data-theme="fire"]{--page1:#8f1e38;--page2:#561028;--page3:#24081a;--panel1:#a12b37;--panel2:#4b1126;--edge:#ffab5a;--board-bg:#501026;--board-edge:#ffad42;--board-outer:#af3b25;--tile-top:#ffaf50;--tile-mid:#ff583e;--tile-bottom:#b71c35;--tile-edge:#ffd16d;--tile-stroke:#610b20;--highlight1:#fff07b;--highlight2:#ffc52b;--highlight3:#ff8b08;--accent:#ffe759;--sub:#ffd3a4;--hint:#ffc7b6}
+    body[data-theme="mint"]{--page1:#96f4d1;--page2:#35b99e;--page3:#0b645d;--panel1:#167d71;--panel2:#07584f;--edge:#b7ffe4;--board-bg:#07554d;--board-edge:#c6fff0;--board-outer:#209c92;--tile-top:#81ffe8;--tile-mid:#1ce2be;--tile-bottom:#009b88;--tile-edge:#d7fff2;--tile-stroke:#075046;--highlight1:#fff579;--highlight2:#ffce21;--highlight3:#ffa018;--accent:#ffeb60;--sub:#eafff8;--hint:#d5fff0}
+    body{background:radial-gradient(ellipse at 50% 0%,var(--page1),var(--page2) 52%,var(--page3));transition:background .2s}
+    .sub{color:var(--sub)}.hint{color:var(--hint)}
+    .stat{border-color:var(--edge);background:linear-gradient(155deg,var(--panel1),var(--panel2));box-shadow:inset 0 2px 5px #fff2,0 8px 18px #0006,0 0 14px color-mix(in srgb,var(--edge) 23%,transparent)}
+    .stat .value{color:var(--accent)}
+    .board{background:var(--board-bg);border-color:var(--board-edge);box-shadow:0 0 0 4px var(--board-outer),0 13px 28px #0008,inset 0 0 18px #0005,0 0 21px color-mix(in srgb,var(--board-edge) 31%,transparent)}
+    .tile{background:linear-gradient(155deg,var(--tile-top),var(--tile-mid) 48%,var(--tile-bottom));border-color:var(--tile-edge);color:var(--tile-text);-webkit-text-stroke:clamp(1.5px,.45vw,3px) var(--tile-stroke);box-shadow:inset 0 3px 1px #ffffffa1,inset 0 -4px 0 #0004,0 6px 9px #0008,0 0 8px color-mix(in srgb,var(--tile-edge) 37%,transparent)}
+    .tile.fifteen{background:linear-gradient(155deg,var(--highlight1),var(--highlight2) 43%,var(--highlight3));border-color:#fff19c;box-shadow:inset 0 3px 2px #fff9c9,inset 0 -4px 0 #99410788,0 6px 11px #0008}
+    .tile.empty{background:color-mix(in srgb,var(--board-bg) 73%,#000);border-color:var(--board-outer);box-shadow:inset 0 4px 13px #0009}
+    .theme-box{margin:17px 0 4px;padding:15px 12px;border-radius:19px;background:linear-gradient(160deg,var(--panel1),var(--panel2));border:1.5px solid var(--edge);box-shadow:inset 0 1px 8px #ffffff13,0 7px 14px #0004}
+    .theme-head{display:flex;gap:8px;align-items:center;justify-content:space-between;font-weight:850;font-size:16px;margin-bottom:12px}
+    .theme-head small{font-size:12px;color:var(--sub);font-weight:650}
+    .theme-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+    .theme-choice{padding:7px 2px 8px;border:2px solid #ffffff4d;background:#0003;color:white;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:clamp(9px,2.5vw,12px);font-weight:800;cursor:pointer;min-width:0}
+    .theme-choice[aria-pressed="true"]{border-color:#fff;box-shadow:0 0 0 2px var(--edge),0 0 15px var(--edge);background:#ffffff24}
+    .theme-dot{width:clamp(26px,8vw,39px);aspect-ratio:1;border-radius:10px;border:2px solid #ffffffbb;box-shadow:inset 0 3px 2px #ffffffb5,inset 0 -3px 3px #0005,0 4px 7px #0008}
+    .theme-choice[data-value="blue"] .theme-dot{background:linear-gradient(145deg,#2ae0ff,#0066ed,#002e98)}
+    .theme-choice[data-value="purple"] .theme-dot{background:linear-gradient(145deg,#ff96ef,#bc31ec,#5d10a3)}
+    .theme-choice[data-value="gold"] .theme-dot{background:linear-gradient(145deg,#ffda5c,#4e515b,#151719)}
+    .theme-choice[data-value="fire"] .theme-dot{background:linear-gradient(145deg,#ffca59,#ff6134,#ac1634)}
+    .theme-choice[data-value="mint"] .theme-dot{background:linear-gradient(145deg,#baffed,#24d8ad,#008a83)}
+    .theme-choice:focus-visible{outline:3px solid white;outline-offset:3px}
+    @media(max-width:350px){.theme-box{padding:12px 8px}.theme-options{gap:5px}.theme-choice{font-size:9px}}
   </style>
 </head>
 <body>
 <main class="app">
-  <header><h1><span class="red">15</span> <span class="blue">PUZZLE</span></h1><div class="sub">CLASSIC BLUE • 4 × 4</div></header>
+  <header><h1><span class="red">15</span> <span class="blue">PUZZLE</span></h1><div class="sub" id="themeSubtitle">CLASSIC BLUE • 4 × 4</div></header>
   <section class="stats" aria-label="สถิติการเล่น">
     <div class="stat"><span class="label">จำนวนครั้งที่เลื่อน</span><strong class="value" id="moves">0</strong></div>
     <div class="stat"><span class="label">เวลา</span><strong class="value" id="time">00:00</strong></div>
@@ -56,6 +87,16 @@
     <button type="button" class="action green" id="newGame">↻ เริ่มเกมใหม่</button>
     <button type="button" class="action blue-button" id="shuffle">⤨ สลับตัวเลข</button>
   </div>
+  <section class="theme-box" aria-label="เลือกธีมสีของเกม">
+    <div class="theme-head"><span>🎨 เลือกธีม 3D</span><small>เปลี่ยนได้ทันที • จำค่าล่าสุด</small></div>
+    <div class="theme-options" id="themes">
+      <button type="button" class="theme-choice" data-value="blue" aria-pressed="true"><span class="theme-dot"></span><span>น้ำเงิน</span></button>
+      <button type="button" class="theme-choice" data-value="purple" aria-pressed="false"><span class="theme-dot"></span><span>ม่วงชมพู</span></button>
+      <button type="button" class="theme-choice" data-value="gold" aria-pressed="false"><span class="theme-dot"></span><span>ดำทอง</span></button>
+      <button type="button" class="theme-choice" data-value="fire" aria-pressed="false"><span class="theme-dot"></span><span>แดงส้ม</span></button>
+      <button type="button" class="theme-choice" data-value="mint" aria-pressed="false"><span class="theme-dot"></span><span>เขียวมิ้นต์</span></button>
+    </div>
+  </section>
   <p class="hint">แตะตัวเลขที่อยู่ติดกับช่องว่าง หรือใช้นิ้วลากไปทางช่องว่างเพื่อเลื่อน • เรียง 1–15 โดยให้ช่องว่างอยู่มุมขวาล่าง</p>
 </main>
 <script>
@@ -85,6 +126,11 @@
   board.addEventListener('lostpointercapture',()=>pointerStart=null);
   document.querySelector('#newGame').addEventListener('click',newGame);
   document.querySelector('#shuffle').addEventListener('click',newGame);
+  const themeLabels={blue:'CLASSIC BLUE',purple:'PURPLE PINK',gold:'BLACK GOLD',fire:'FIRE ORANGE',mint:'MINT CANDY'};
+  const themeButtons=[...document.querySelectorAll('.theme-choice')];
+  function useTheme(name){if(!Object.hasOwn(themeLabels,name))name='blue';document.body.dataset.theme=name;document.getElementById('themeSubtitle').textContent=themeLabels[name]+' • 4 × 4';themeButtons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===name)));try{localStorage.setItem('puzzle15-theme',name)}catch{}}
+  themeButtons.forEach(b=>b.addEventListener('click',()=>useTheme(b.dataset.value)));
+  let saved='blue';try{saved=localStorage.getItem('puzzle15-theme')||'blue'}catch{}useTheme(saved);
   // Initial board is guaranteed solvable because shuffling uses only legal moves.
   newGame();
 })();
