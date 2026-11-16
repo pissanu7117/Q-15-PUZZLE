@@ -1,11 +1,11 @@
-// Fill from Firebase Console > Project settings > Your apps > Web app.
-// Keeping this empty means the game works locally, but online rankings remain off.
-window.Q15_FIREBASE_CONFIG = null;
-/* Example (replace with YOUR values):
+// Firebase settings for Q-15-Puzzle (Web app).
+// Firebase web configuration is public; protect Firestore using Authentication and Security Rules.
 window.Q15_FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDiYGO6LZ53eRknfGqEavrMH9ykIQNxQNc",
+  authDomain: "q-15-puzzle.firebaseapp.com",
+  projectId: "q-15-puzzle",
+  storageBucket: "q-15-puzzle.firebasestorage.app",
+  messagingSenderId: "124338498687",
+  appId: "1:124338498687:web:27910d2e8977a666a9234a",
+  measurementId: "G-KLEEPWNTLQ"
 };
-*/
