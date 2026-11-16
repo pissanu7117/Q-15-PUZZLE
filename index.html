@@ -1,6 +1,93 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101827"><meta name="apple-mobile-web-app-capable" content="yes"><title>15 PUZZLE</title><style>
-:root{--tile:#3977c9;--number:#ffffff;--size:76%;--accent:#b57c36}*{box-sizing:border-box}body{margin:0;background:#101827;color:#fff;font-family:system-ui,-apple-system,sans-serif}main{max-width:620px;min-height:100dvh;margin:auto;padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 18px);display:flex;flex-direction:column;justify-content:center;gap:12px}h1{text-align:center;font-size:clamp(27px,7vw,42px);margin:0}.sub{text-align:center;color:#a8bedd;letter-spacing:2px;font-size:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#202d42;padding:9px;border-radius:13px;text-align:center}.stat span{display:block;color:#a8bedd;font-size:13px}.stat strong{font-size:25px;font-variant-numeric:tabular-nums}.board{background:#28364b;padding:5px;border-radius:13px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:100%;aspect-ratio:1}.tile{border:0;border-radius:8px;background:var(--tile);color:var(--number);font-weight:900;min-width:0;display:grid;place-items:center;touch-action:manipulation;cursor:pointer;font-variant-numeric:tabular-nums;position:relative}.tile .digit{font-size:var(--size);line-height:1;white-space:nowrap}.tile.orange{background:var(--accent)}.tile.blank{background:#152238;cursor:default}.tile:active:not(.blank){filter:brightness(1.2);transform:scale(.97)}.controls{background:#202d42;border-radius:13px;padding:12px;display:grid;gap:10px}.controls label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:#e0eafa}.controls select{background:#101827;color:white;border:1px solid #667b99;border-radius:8px;padding:9px;max-width:60%;font-size:15px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}button.action{border:0;border-radius:12px;background:#3977c9;color:white;font-size:16px;font-weight:750;padding:14px 8px;cursor:pointer}.action.secondary{background:#344965}.hint{text-align:center;color:#a8bedd;margin:0;font-size:13px}.win{text-align:center;color:#f6c56b;font-size:19px;font-weight:800;min-height:24px}@media(max-height:740px){main{justify-content:flex-start}}@media(min-width:620px){main{max-width:530px}}
-</style></head><body><main><h1>15 PUZZLE</h1><div class="sub">CLASSIC BLUE • 4 × 4</div><div class="stats"><div class="stat"><span>จำนวนครั้งที่เลื่อน</span><strong id="moves">0</strong></div><div class="stat"><span>เวลา</span><strong id="time">00:00</strong></div></div><div class="board" id="board" aria-label="เกมเลื่อนตัวเลข 4 คูณ 4"></div><div class="win" id="win" aria-live="polite"></div><section class="controls" aria-label="ปรับแต่งเกม"><label>ขนาดตัวเลข<select id="size"><option value="54">ปกติ</option><option value="65">ใหญ่</option><option value="76" selected>ใหญ่มาก</option><option value="88">ใหญ่พิเศษ</option></select></label><label>สีช่องสี่เหลี่ยม<select id="tileColor"><option value="blue">ฟ้าน้ำเงิน</option><option value="cyan">ฟ้าสดใส</option><option value="green">เขียว</option><option value="purple">ม่วง</option><option value="red">แดง</option><option value="orange">ส้ม</option><option value="pink">ชมพู</option></select></label><label>สีตัวเลข<select id="numberColor"><option value="white">ขาว</option><option value="yellow">เหลือง</option><option value="black">ดำ</option><option value="navy">น้ำเงินเข้ม</option><option value="cyan">ฟ้าอ่อน</option><option value="pink">ชมพูอ่อน</option></select></label></section><div class="actions"><button class="action" id="restart">↻ สุ่มเกมใหม่</button><button class="action secondary" id="resetColors">คืนค่าสีเดิม</button></div><p class="hint">แตะเลขที่ติดกับช่องว่างเพื่อเลื่อน • เลข 15 สีส้มตามแบบเดิม</p></main><script>
-'use strict';const solved=Array.from({length:16},(_,i)=>(i+1)%16);let tiles=[],moves=0,seconds=0,running=false,won=false,timer=null;const board=document.getElementById('board'),movesEl=document.getElementById('moves'),timeEl=document.getElementById('time'),winEl=document.getElementById('win');function clock(){timeEl.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}function draw(){board.replaceChildren();tiles.forEach((n,i)=>{const b=document.createElement('button');b.className='tile'+(n===0?' blank':n===15?' orange':'');b.setAttribute('aria-label',n?'เลข '+n:'ช่องว่าง');if(n){const span=document.createElement('span');span.className='digit';span.textContent=n;b.append(span)}b.onclick=()=>move(i);board.append(b)});movesEl.textContent=moves;clock()}function move(i){if(won)return;const z=tiles.indexOf(0);if(Math.abs(Math.floor(i/4)-Math.floor(z/4))+Math.abs(i%4-z%4)!==1)return;if(!running){running=true;timer=setInterval(()=>{seconds++;clock()},1000)}[tiles[i],tiles[z]]=[tiles[z],tiles[i]];moves++;if(tiles.every((n,j)=>n===solved[j])){won=true;clearInterval(timer);winEl.textContent='🏆 สำเร็จแล้ว! '+moves+' ครั้ง เวลา '+String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}draw()}function restart(){clearInterval(timer);tiles=[...solved];let z=15,previous=-1;for(let k=0;k<180;k++){const choices=[z%4?z-1:-1,z%4<3?z+1:-1,z>=4?z-4:-1,z<12?z+4:-1].filter(x=>x>=0&&x!==previous);const q=choices[Math.floor(Math.random()*choices.length)];[tiles[z],tiles[q]]=[tiles[q],tiles[z]];previous=z;z=q}moves=0;seconds=0;running=false;won=false;winEl.textContent='';draw()}
-const palettes={tileColor:{blue:'#3977c9',cyan:'#20a5d8',green:'#238d70',purple:'#7653bb',red:'#c94d5d',orange:'#c47c32',pink:'#c85c96'},numberColor:{white:'#ffffff',yellow:'#ffe36a',black:'#111827',navy:'#102d53',cyan:'#b5f3ff',pink:'#ffd1e8'}};const size=document.getElementById('size'),tileColor=document.getElementById('tileColor'),numberColor=document.getElementById('numberColor');function loadChoice(el,defaultValue){let v;try{v=localStorage.getItem('15p-'+el.id)}catch(e){}el.value=[...el.options].some(o=>o.value===v)?v:defaultValue}function apply(){document.documentElement.style.setProperty('--size',size.value+'%');document.documentElement.style.setProperty('--tile',palettes.tileColor[tileColor.value]);document.documentElement.style.setProperty('--number',palettes.numberColor[numberColor.value]);for(const el of [size,tileColor,numberColor]){try{localStorage.setItem('15p-'+el.id,el.value)}catch(e){}}}loadChoice(size,'76');loadChoice(tileColor,'blue');loadChoice(numberColor,'white');for(const el of [size,tileColor,numberColor])el.addEventListener('change',apply);document.getElementById('resetColors').onclick=()=>{size.value='76';tileColor.value='blue';numberColor.value='white';apply()};document.getElementById('restart').onclick=restart;apply();restart();
-</script></body></html>
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#071226">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="15 PUZZLE">
+  <title>15 PUZZLE • Classic Blue</title>
+  <style>
+    :root {color-scheme:dark; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:#071226;}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;min-height:100svh;background:radial-gradient(ellipse at top,#102855 0%,#08162e 46%,#050d1d 100%);color:white;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    .app{width:min(100%,620px);margin:auto;padding:23px 14px 28px}
+    header{text-align:center;margin:0 0 20px}
+    h1{font-size:clamp(38px,9vw,62px);line-height:1.12;letter-spacing:.5px;margin:4px 0 6px;font-weight:1000;text-shadow:0 3px 0 #15244f,0 6px 20px #040c20}
+    h1 .red{color:#ff4747;text-shadow:0 2px 0 #6b0716,0 5px 12px #000}
+    h1 .blue{color:#f6fbff;-webkit-text-stroke:1px #7fb8ff}
+    .sub{font-size:clamp(11px,3vw,15px);letter-spacing:3px;color:#b9d8fc;font-weight:750}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+    .stat{border:1.5px solid #5fa9ed;background:linear-gradient(155deg,#1b355d,#0a1a34);border-radius:18px;text-align:center;padding:11px 5px;box-shadow:inset 0 1px 10px #ffffff13,0 6px 16px #0005}
+    .stat .label{display:block;color:#d9eaff;font-size:clamp(13px,3.7vw,18px);font-weight:700}
+    .stat .value{display:block;color:#ffeb21;font-size:clamp(32px,9vw,48px);font-weight:1000;line-height:1.3;font-variant-numeric:tabular-nums;text-shadow:0 3px 5px #0009}
+    .board{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(5px,1.5vw,9px);aspect-ratio:1;background:#071a39;border:3px solid #64bcff;border-radius:20px;padding:clamp(7px,1.6vw,11px);box-shadow:0 0 0 4px #173c68,0 8px 25px #0008,inset 0 0 18px #0078cc44;touch-action:none;user-select:none;-webkit-user-select:none}
+    .tile{min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;border-radius:clamp(9px,2.5vw,17px);border:2px solid #70d8ff;background:linear-gradient(155deg,#15adff 0%,#0865df 37%,#0638a6 100%);box-shadow:inset 0 2px 0 #c1f6ff9c,inset 0 -3px 0 #073389,0 4px 9px #0008;font-size:clamp(39px, min(13.5vw, 11vh), 83px);font-weight:1000;line-height:1;font-variant-numeric:tabular-nums;color:white;-webkit-text-stroke:clamp(1.5px,.45vw,3px) #0a1637;paint-order:stroke fill;text-shadow:2px 4px 2px #071331,0 0 1px #fff;cursor:pointer;transition:transform .13s ease,filter .13s ease}
+    .tile:active{transform:scale(.96);filter:brightness(1.14)}
+    .tile.fifteen{background:linear-gradient(155deg,#ffda22,#ffa519 44%,#fa6b00);border-color:#ffef3b;box-shadow:inset 0 2px 0 #fff7b2,inset 0 -3px 0 #9e3900,0 4px 9px #0008}
+    .tile.empty{background:#06152d;border:1px solid #103663;box-shadow:inset 0 4px 12px #0006;cursor:default}
+    .tile.invalid{animation:shake .18s ease}
+    @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 0 12px}
+    button{font-family:inherit;touch-action:manipulation}
+    .action{min-height:58px;border-radius:17px;color:#fff;font-size:clamp(15px,4vw,21px);font-weight:900;border:2px solid #b5edff;box-shadow:inset 0 2px 0 #ffffff70,inset 0 -4px 0 #0004,0 6px 13px #0007;cursor:pointer;padding:9px 7px}
+    .action:active{transform:translateY(2px)}
+    .green{background:linear-gradient(#4dfb25,#11b900 55%,#0a7e08)}
+    .blue-button{background:linear-gradient(#20bdff,#0066e3 55%,#003cad)}
+    .hint{text-align:center;color:#a6c3e8;font-size:13px;line-height:1.6;margin:16px 2px 0}
+    .success{display:none;margin-top:14px;padding:15px;background:#103c30;border:2px solid #53f19b;border-radius:16px;text-align:center;color:#d6ffea;font-weight:800;font-size:18px}
+    .success.show{display:block}
+    .overlay{position:absolute;pointer-events:none;border-radius:14px;z-index:4;opacity:0;transition:transform .135s ease,opacity .135s ease;will-change:transform}
+    @media(max-width:370px){.app{padding-left:10px;padding-right:10px}.board{gap:5px;padding:6px;border-radius:15px}.tile{font-size:clamp(37px,13.5vw,55px)}.action{font-size:14px}}
+    @media(prefers-reduced-motion:reduce){.tile,.overlay{transition:none!important}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <header><h1><span class="red">15</span> <span class="blue">PUZZLE</span></h1><div class="sub">CLASSIC BLUE • 4 × 4</div></header>
+  <section class="stats" aria-label="สถิติการเล่น">
+    <div class="stat"><span class="label">จำนวนครั้งที่เลื่อน</span><strong class="value" id="moves">0</strong></div>
+    <div class="stat"><span class="label">เวลา</span><strong class="value" id="time">00:00</strong></div>
+  </section>
+  <div id="board" class="board" aria-label="กระดานเกม 15 พัซเซิล"></div>
+  <div class="success" id="success" role="status">🎉 เก่งมาก! เรียงตัวเลขครบแล้ว!</div>
+  <div class="actions">
+    <button type="button" class="action green" id="newGame">↻ เริ่มเกมใหม่</button>
+    <button type="button" class="action blue-button" id="shuffle">⤨ สลับตัวเลข</button>
+  </div>
+  <p class="hint">แตะตัวเลขที่อยู่ติดกับช่องว่าง หรือใช้นิ้วลากไปทางช่องว่างเพื่อเลื่อน • เรียง 1–15 โดยให้ช่องว่างอยู่มุมขวาล่าง</p>
+</main>
+<script>
+(()=>{'use strict';
+  const board=document.querySelector('#board'), movesEl=document.querySelector('#moves'),timeEl=document.querySelector('#time'),successEl=document.querySelector('#success');
+  const GOAL=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0];
+  let state=GOAL.slice(),moves=0,seconds=0,started=false,finished=false,tick=null,pointerStart=null,animating=false;
+  function neighbors(empty){let a=[];let r=Math.floor(empty/4),c=empty%4;if(r>0)a.push(empty-4);if(r<3)a.push(empty+4);if(c>0)a.push(empty-1);if(c<3)a.push(empty+1);return a}
+  function clock(){const mm=String(Math.floor(seconds/60)).padStart(2,'0'),ss=String(seconds%60).padStart(2,'0');timeEl.textContent=mm+':'+ss}
+  function stopClock(){if(tick!==null){clearInterval(tick);tick=null}}
+  function startClock(){if(started)return;started=true;tick=setInterval(()=>{seconds++;clock()},1000)}
+  function resetStats(){stopClock();started=false;finished=false;moves=0;seconds=0;movesEl.textContent='0';clock();successEl.classList.remove('show');animating=false}
+  function render(){board.replaceChildren();state.forEach((n,i)=>{const el=document.createElement('div');el.className='tile'+(n===0?' empty':n===15?' fifteen':'');el.dataset.index=String(i);if(n){el.textContent=String(n);el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','เลื่อนหมายเลข '+n);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();attempt(i)}})}else{el.setAttribute('aria-label','ช่องว่าง')}board.appendChild(el)})}
+  function won(){return state.every((n,i)=>n===GOAL[i])}
+  function attempt(index){if(finished||animating)return;const blank=state.indexOf(0);if(!neighbors(blank).includes(index))return;
+    const from=board.children[index],to=board.children[blank];
+    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){const a=from.getBoundingClientRect(),b=to.getBoundingClientRect();const ghost=from.cloneNode(true);ghost.classList.add('overlay');ghost.style.cssText=`position:fixed;left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;z-index:9999;pointer-events:none;transition:transform .14s ease;`;document.body.appendChild(ghost);from.style.visibility='hidden';animating=true;requestAnimationFrame(()=>{requestAnimationFrame(()=>{ghost.style.transform=`translate(${b.left-a.left}px,${b.top-a.top}px)`})});setTimeout(()=>{ghost.remove();commit(index,blank);animating=false},150)}else commit(index,blank)
+  }
+  function commit(index,blank){startClock();[state[index],state[blank]]=[state[blank],state[index]];moves++;movesEl.textContent=String(moves);render();if(won()){finished=true;stopClock();successEl.classList.add('show')}}
+  function shuffleState(){state=GOAL.slice();let previous=-1,empty=15;for(let k=0;k<240;k++){const opts=neighbors(empty).filter(i=>i!==previous);const pick=opts[Math.floor(Math.random()*opts.length)];[state[empty],state[pick]]=[state[pick],state[empty]];previous=empty;empty=pick}if(won())shuffleState();}
+  function newGame(){resetStats();shuffleState();render()}
+  function dragDirection(dx,dy){if(Math.abs(dx)>Math.abs(dy))return dx>0?'right':'left';return dy>0?'down':'up'}
+  function directionAllowed(index,blank,direction){const delta=blank-index;return (direction==='right'&&delta===1&&Math.floor(index/4)===Math.floor(blank/4))||(direction==='left'&&delta===-1&&Math.floor(index/4)===Math.floor(blank/4))||(direction==='down'&&delta===4)||(direction==='up'&&delta===-4)}
+  board.addEventListener('pointerdown',e=>{const tile=e.target.closest('.tile');if(!tile||tile.classList.contains('empty')){pointerStart=null;return}pointerStart={id:e.pointerId,index:Number(tile.dataset.index),x:e.clientX,y:e.clientY};try{board.setPointerCapture(e.pointerId)}catch{}});
+  board.addEventListener('pointerup',e=>{if(!pointerStart||pointerStart.id!==e.pointerId)return;const p=pointerStart;pointerStart=null;const dx=e.clientX-p.x,dy=e.clientY-p.y;const distance=Math.hypot(dx,dy);if(distance<18){attempt(p.index);return}const blank=state.indexOf(0);if(directionAllowed(p.index,blank,dragDirection(dx,dy)))attempt(p.index)});
+  board.addEventListener('pointercancel',()=>pointerStart=null);
+  board.addEventListener('lostpointercapture',()=>pointerStart=null);
+  document.querySelector('#newGame').addEventListener('click',newGame);
+  document.querySelector('#shuffle').addEventListener('click',newGame);
+  // Initial board is guaranteed solvable because shuffling uses only legal moves.
+  newGame();
+})();
+</script>
+</body>
+</html>
