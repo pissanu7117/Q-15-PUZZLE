@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="15 PUZZLE">
   <link rel="apple-touch-icon" href="15-puzzle-icon.png">
   <link rel="icon" type="image/png" href="15-puzzle-icon.png">
-  <title>15 PUZZLE • 3D Themes</title>
+  <title>15 PUZZLE • Stats & Online</title>
   <style>
     :root {color-scheme:dark; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:#071226;}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -73,11 +73,21 @@
     .theme-choice[data-value="mint"] .theme-dot{background:linear-gradient(145deg,#baffed,#24d8ad,#008a83)}
     .theme-choice:focus-visible{outline:3px solid white;outline-offset:3px}
     @media(max-width:350px){.theme-box{padding:12px 8px}.theme-options{gap:5px}.theme-choice{font-size:9px}}
+
+    .navtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 15px}
+    .tab{border:1.5px solid var(--edge);border-radius:13px;background:linear-gradient(150deg,var(--panel1),var(--panel2));color:#fff;font-weight:850;font-size:clamp(12px,3.2vw,15px);padding:11px 3px;cursor:pointer}
+    .tab[aria-selected="true"]{border-color:#fff9b0;background:linear-gradient(150deg,var(--tile-top),var(--tile-mid),var(--tile-bottom));box-shadow:0 0 0 2px var(--board-outer)}
+    .page[hidden]{display:none!important}.panel{border:1.5px solid var(--edge);border-radius:18px;padding:16px 13px;background:linear-gradient(155deg,var(--panel1),var(--panel2));margin:11px 0;box-shadow:0 8px 19px #0005}
+    .panel h2{font-size:21px;margin:0 0 12px}.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi{border-radius:13px;background:#0003;padding:13px 8px;text-align:center}.kpi strong{display:block;color:var(--accent);font-size:27px;font-variant-numeric:tabular-nums}.kpi span{display:block;font-size:12px;color:var(--sub)}
+    .records{width:100%;border-collapse:collapse;font-size:13px}.records th,.records td{padding:10px 5px;border-bottom:1px solid #ffffff24;text-align:left}.records th{color:var(--sub)}.records td:nth-child(n+2),.records th:nth-child(n+2){text-align:right}.empty-state{color:var(--sub);font-size:14px;line-height:1.7}
+    .minor{border:1px solid var(--edge);border-radius:12px;padding:11px 13px;font-size:14px;font-weight:750;background:#ffffff15;color:white;cursor:pointer}.minor:disabled{opacity:.5;cursor:default}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.control{display:block;width:100%;padding:12px;border:1.5px solid var(--edge);border-radius:11px;background:#08182b;color:#fff;font-size:16px}.field-label{display:block;font-size:13px;color:var(--sub);font-weight:750;margin-bottom:7px}.status{font-size:13px;color:var(--sub);line-height:1.7}.note{border-radius:12px;background:#0003;padding:10px;font-size:12px;line-height:1.6;color:var(--sub)}
   </style>
 </head>
 <body>
 <main class="app">
   <header><h1><span class="red">15</span> <span class="blue">PUZZLE</span></h1><div class="sub" id="themeSubtitle">CLASSIC BLUE • 4 × 4</div></header>
+  <nav class="navtabs" aria-label="เมนูเกม"><button class="tab" data-page="game" aria-selected="true">🎮 เล่นเกม</button><button class="tab" data-page="personal" aria-selected="false">📊 สถิติของฉัน</button><button class="tab" data-page="online" aria-selected="false">🏆 อันดับออนไลน์</button></nav>
+  <div class="page" id="page-game">
   <section class="stats" aria-label="สถิติการเล่น">
     <div class="stat"><span class="label">จำนวนครั้งที่เลื่อน</span><strong class="value" id="moves">0</strong></div>
     <div class="stat"><span class="label">เวลา</span><strong class="value" id="time">00:00</strong></div>
@@ -99,7 +109,18 @@
     </div>
   </section>
   <p class="hint">แตะตัวเลขที่อยู่ติดกับช่องว่าง หรือใช้นิ้วลากไปทางช่องว่างเพื่อเลื่อน • เรียง 1–15 โดยให้ช่องว่างอยู่มุมขวาล่าง</p>
+  </div>
+  <div class="page" id="page-personal" hidden>
+    <section class="panel"><h2>📊 สถิติส่วนตัว</h2><div class="kpis"><div class="kpi"><strong id="gamesCount">0</strong><span>เริ่มเล่นทั้งหมด</span></div><div class="kpi"><strong id="winsCount">0</strong><span>เล่นสำเร็จ</span></div><div class="kpi"><strong id="bestMoves">—</strong><span>เลื่อนน้อยที่สุด</span></div><div class="kpi"><strong id="bestTime">—</strong><span>เวลาที่เร็วที่สุด</span></div></div></section>
+    <section class="panel"><h2>📋 ประวัติการชนะ</h2><div id="historyWrap" class="empty-state">ยังไม่มีประวัติการเล่นสำเร็จ</div><div class="toolbar"><button class="minor" id="exportData">⬇️ สำรองข้อมูล JSON</button><button class="minor" id="importData">⬆️ นำเข้าข้อมูล</button><input type="file" id="importFile" accept="application/json,.json" hidden></div><p class="note">ข้อมูลส่วนตัวอยู่ในเบราว์เซอร์ของเครื่องนี้ หากล้างข้อมูลเว็บไซต์อาจหายได้ ควรสำรองข้อมูลไว้เป็นระยะ</p></section>
+  </div>
+  <div class="page" id="page-online" hidden>
+    <section class="panel"><h2>🏆 อันดับออนไลน์</h2><label class="field-label" for="playerName">ชื่อที่แสดงในตารางอันดับ (2–20 ตัวอักษร)</label><input class="control" id="playerName" maxlength="20" placeholder="เช่น Q PLAYER" autocomplete="nickname"><div class="toolbar"><button class="minor" id="saveName">บันทึกชื่อ</button><button class="minor" id="refreshRanks">↻ โหลดอันดับใหม่</button></div><div class="status" id="onlineStatus" role="status">กำลังตรวจสอบการเชื่อมต่อ...</div></section>
+    <section class="panel"><h2>🥇 10 อันดับแรก</h2><div id="rankingWrap" class="empty-state">ยังไม่มีข้อมูลอันดับออนไลน์</div><p class="note">จัดอันดับตามจำนวนครั้งที่เลื่อนน้อยสุด แล้วใช้เวลาตัดสินเมื่อจำนวนครั้งเท่ากัน • ตารางคะแนนเวอร์ชันทดลอง ยังไม่มีการตรวจคะแนนฝั่งเซิร์ฟเวอร์</p></section>
+    <section class="panel"><h2>☁️ คะแนนของฉัน</h2><p class="status" id="syncStatus">เล่นชนะแล้วระบบจะส่งคะแนนที่ดีที่สุดให้โดยอัตโนมัติ เมื่อเชื่อมต่อ Firebase สำเร็จ</p><button class="minor" id="syncNow">ส่งคะแนนที่ดีที่สุดอีกครั้ง</button></section>
+  </div>
 </main>
+<script src="firebase-config.js"></script>
 <script>
 (()=>{'use strict';
   const board=document.querySelector('#board'), movesEl=document.querySelector('#moves'),timeEl=document.querySelector('#time'),successEl=document.querySelector('#success');
@@ -116,7 +137,7 @@
     const from=board.children[index],to=board.children[blank];
     if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){const a=from.getBoundingClientRect(),b=to.getBoundingClientRect();const ghost=from.cloneNode(true);ghost.classList.add('overlay');ghost.style.cssText=`position:fixed;left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;z-index:9999;pointer-events:none;transition:transform .14s ease;`;document.body.appendChild(ghost);from.style.visibility='hidden';animating=true;requestAnimationFrame(()=>{requestAnimationFrame(()=>{ghost.style.transform=`translate(${b.left-a.left}px,${b.top-a.top}px)`})});setTimeout(()=>{ghost.remove();commit(index,blank);animating=false},150)}else commit(index,blank)
   }
-  function commit(index,blank){startClock();[state[index],state[blank]]=[state[blank],state[index]];moves++;movesEl.textContent=String(moves);render();if(won()){finished=true;stopClock();successEl.classList.add('show')}}
+  function commit(index,blank){if(!started)recordStart();startClock();[state[index],state[blank]]=[state[blank],state[index]];moves++;movesEl.textContent=String(moves);render();if(won()){finished=true;stopClock();successEl.classList.add('show');saveWin(moves,seconds)}}
   function shuffleState(){state=GOAL.slice();let previous=-1,empty=15;for(let k=0;k<240;k++){const opts=neighbors(empty).filter(i=>i!==previous);const pick=opts[Math.floor(Math.random()*opts.length)];[state[empty],state[pick]]=[state[pick],state[empty]];previous=empty;empty=pick}if(won())shuffleState();}
   function newGame(){resetStats();shuffleState();render()}
   function dragDirection(dx,dy){if(Math.abs(dx)>Math.abs(dy))return dx>0?'right':'left';return dy>0?'down':'up'}
@@ -132,6 +153,50 @@
   function useTheme(name){if(!Object.hasOwn(themeLabels,name))name='blue';document.body.dataset.theme=name;document.getElementById('themeSubtitle').textContent=themeLabels[name]+' • 4 × 4';themeButtons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===name)));try{localStorage.setItem('puzzle15-theme',name)}catch{}}
   themeButtons.forEach(b=>b.addEventListener('click',()=>useTheme(b.dataset.value)));
   let saved='blue';try{saved=localStorage.getItem('puzzle15-theme')||'blue'}catch{}useTheme(saved);
+
+  // Stats: only wins are recorded, never individual tile moves.
+  const STATS_KEY='q15-stats-v2',NAME_KEY='q15-player-name';
+  let stats={started:0,wins:[]};
+  try{const s=JSON.parse(localStorage.getItem(STATS_KEY)||'null');if(s&&Number.isSafeInteger(s.started)&&Array.isArray(s.wins)){stats={started:s.started,wins:s.wins.filter(w=>Number.isInteger(w.moves)&&w.moves>0&&Number.isInteger(w.seconds)&&w.seconds>=0&&typeof w.date==='string').slice(0,1000)}}}catch{}
+  function saveStats(){try{localStorage.setItem(STATS_KEY,JSON.stringify(stats))}catch(e){console.warn('Local storage unavailable',e)}}
+  function recordStart(){stats.started++;saveStats();renderStats()}
+  function formatTime(s){if(!Number.isFinite(s))return '—';return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+  function bestWin(){return stats.wins.slice().sort((a,b)=>a.moves-b.moves||a.seconds-b.seconds)[0]||null}
+  function renderStats(){document.getElementById('gamesCount').textContent=stats.started;document.getElementById('winsCount').textContent=stats.wins.length;document.getElementById('bestMoves').textContent=stats.wins.length?Math.min(...stats.wins.map(x=>x.moves)):'—';document.getElementById('bestTime').textContent=stats.wins.length?formatTime(Math.min(...stats.wins.map(x=>x.seconds))):'—';const wrap=document.getElementById('historyWrap');wrap.replaceChildren();if(!stats.wins.length){wrap.textContent='ยังไม่มีประวัติการเล่นสำเร็จ';return}const table=document.createElement('table');table.className='records';const head=document.createElement('thead');head.innerHTML='<tr><th>วัน/เวลา</th><th>เลื่อน</th><th>เวลา</th></tr>';table.append(head);const body=document.createElement('tbody');stats.wins.slice().reverse().slice(0,30).forEach(w=>{const tr=document.createElement('tr');[new Date(w.date).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}),w.moves,formatTime(w.seconds)].forEach(v=>{const td=document.createElement('td');td.textContent=String(v);tr.append(td)});body.append(tr)});table.append(body);wrap.append(table)}
+  function saveWin(m,s){stats.wins.push({moves:m,seconds:s,date:new Date().toISOString()});if(stats.wins.length>1000)stats.wins=stats.wins.slice(-1000);saveStats();renderStats();syncBest()}
+  document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{const page=tab.dataset.page;document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',String(t===tab)));document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!=='page-'+page);if(page==='personal')renderStats();if(page==='online')refreshRanks()}));
+  document.getElementById('exportData').addEventListener('click',()=>{const content=JSON.stringify({version:2,exportedAt:new Date().toISOString(),stats},null,2);const url=URL.createObjectURL(new Blob([content],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='15-puzzle-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)});
+  document.getElementById('importData').addEventListener('click',()=>document.getElementById('importFile').click());
+  document.getElementById('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>2e6)throw Error('ไฟล์ใหญ่เกินไป');const obj=JSON.parse(await f.text());if(obj.version!==2||!obj.stats||!Number.isSafeInteger(obj.stats.started)||obj.stats.started<0||!Array.isArray(obj.stats.wins))throw Error('รูปแบบข้อมูลไม่ถูกต้อง');const wins=obj.stats.wins;if(wins.length>1000||wins.some(w=>!Number.isInteger(w.moves)||w.moves<1||w.moves>1e7||!Number.isInteger(w.seconds)||w.seconds<0||w.seconds>1e8||Number.isNaN(Date.parse(w.date))))throw Error('รายการประวัติไม่ถูกต้อง');if(!confirm('นำเข้าข้อมูลนี้แทนสถิติเดิมในเครื่องใช่ไหม?'))return;stats={started:obj.stats.started,wins};saveStats();renderStats();alert('นำเข้าสถิติสำเร็จ')}catch(err){alert('นำเข้าไม่ได้: '+err.message)}finally{e.target.value=''}});
+  const nameInput=document.getElementById('playerName'),onlineStatus=document.getElementById('onlineStatus'),syncStatus=document.getElementById('syncStatus'),rankingWrap=document.getElementById('rankingWrap');
+  try{nameInput.value=localStorage.getItem(NAME_KEY)||''}catch{}
+  const validName=()=>nameInput.value.trim().length>=2&&nameInput.value.trim().length<=20;
+  document.getElementById('saveName').addEventListener('click',()=>{if(!validName()){alert('กรุณาใส่ชื่อ 2–20 ตัวอักษร');return}try{localStorage.setItem(NAME_KEY,nameInput.value.trim())}catch{}syncBest()});
+  // Optional online layer: firebase-config.js defines window.Q15_FIREBASE_CONFIG. No credentials in this HTML.
+  let onlineDb=null,onlineUser=null,onlineFns=null, onlineBusy=false;
+  function setStatus(msg){onlineStatus.textContent=msg}
+  async function setupOnline(){const conf=window.Q15_FIREBASE_CONFIG;if(!conf||!conf.apiKey||!conf.projectId){setStatus('โหมดส่วนตัวพร้อมใช้ • หากต้องการอันดับออนไลน์ ให้ตั้งค่า firebase-config.js ตามคู่มือ');syncStatus.textContent='ยังไม่ได้เชื่อม Firebase — คะแนนยังบันทึกในเครื่องตามปกติ';return}
+    try{
+      const [{initializeApp},{getAuth,signInAnonymously,onAuthStateChanged},{getFirestore,collection,doc,setDoc,query,orderBy,limit,getDocs,serverTimestamp}]=await Promise.all([
+        import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js'),
+        import('https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js')]);
+      const app=initializeApp(conf),auth=getAuth(app);onlineDb=getFirestore(app);onlineFns={collection,doc,setDoc,query,orderBy,limit,getDocs,serverTimestamp};
+      onAuthStateChanged(auth,u=>{onlineUser=u;if(u){setStatus('● เชื่อมต่อออนไลน์แล้ว • พร้อมดูอันดับ');syncBest()}else setStatus('กำลังยืนยันตัวผู้เล่น...')});
+      await signInAnonymously(auth);
+    }catch(e){console.error(e);setStatus('เชื่อมต่ออันดับออนไลน์ไม่สำเร็จ: '+(e.code||e.message));syncStatus.textContent='คะแนนของคุณยังอยู่ในเครื่อง สามารถเล่นต่อได้'}
+  }
+  async function syncBest(){const best=bestWin();if(!best){syncStatus.textContent='เล่นให้สำเร็จก่อน ระบบจึงจะมีคะแนนส่ง';return}if(!onlineDb||!onlineUser){syncStatus.textContent='มีคะแนนในเครื่องแล้ว แต่ยังไม่เชื่อมออนไลน์';return}if(!validName()){syncStatus.textContent='กรุณาตั้งชื่อผู้เล่น 2–20 ตัวอักษรแล้วกดบันทึกชื่อก่อน';return}if(onlineBusy)return;onlineBusy=true;syncStatus.textContent='กำลังตรวจสอบและส่งคะแนน...';try{
+    const {doc,setDoc,serverTimestamp}=onlineFns;
+    // Rules below permit a player to update only their own record with a strictly better score.
+    await setDoc(doc(onlineDb,'leaderboard',onlineUser.uid),{name:nameInput.value.trim(),moves:best.moves,seconds:best.seconds,updatedAt:serverTimestamp()});
+    syncStatus.textContent='ส่งคะแนนที่ดีที่สุดสำเร็จ: '+best.moves+' ครั้ง • '+formatTime(best.seconds);
+  }catch(e){console.error(e);syncStatus.textContent='ส่งคะแนนไม่สำเร็จ ('+(e.code||'เครือข่าย')+') • ข้อมูลในเครื่องยังอยู่'}finally{onlineBusy=false}}
+  async function refreshRanks(){if(!onlineDb||!onlineUser){rankingWrap.textContent='ยังไม่ได้เชื่อมต่อ Firebase';return}rankingWrap.textContent='กำลังโหลด...';try{const {collection,query,orderBy,limit,getDocs}=onlineFns;const snap=await getDocs(query(collection(onlineDb,'leaderboard'),orderBy('moves','asc'),orderBy('seconds','asc'),limit(10)));rankingWrap.replaceChildren();if(snap.empty){rankingWrap.textContent='ยังไม่มีผู้เล่นในตารางอันดับ';return}const table=document.createElement('table');table.className='records';const th=document.createElement('thead');th.innerHTML='<tr><th>อันดับ/ชื่อ</th><th>เลื่อน</th><th>เวลา</th></tr>';table.append(th);const tbody=document.createElement('tbody');snap.docs.forEach((d,i)=>{const v=d.data(),tr=document.createElement('tr');const cells=[`${i+1}. ${v.name||'PLAYER'}`,v.moves,formatTime(v.seconds)];cells.forEach(c=>{const td=document.createElement('td');td.textContent=String(c);tr.append(td)});tbody.append(tr)});table.append(tbody);rankingWrap.append(table)}catch(e){console.error(e);rankingWrap.textContent='โหลดอันดับไม่สำเร็จ ('+(e.code||'เครือข่าย')+')'}}
+  document.getElementById('refreshRanks').addEventListener('click',refreshRanks);
+  document.getElementById('syncNow').addEventListener('click',syncBest);
+  renderStats();setupOnline();
+
   // Initial board is guaranteed solvable because shuffling uses only legal moves.
   newGame();
 })();
